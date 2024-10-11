@@ -94,6 +94,7 @@ ultimo_registro = time.time()  # Marca o tempo do último registro
 # Variáveis de controle para o processo
 registro_ativo = False
 processo_finalizado = False
+delayContagem = True
 
 while True:
     # Ler o frame da webcam
@@ -120,10 +121,17 @@ while True:
 
     # Se o registro estiver ativo e não finalizado, registrar preto ou branco
     if registro_ativo and not processo_finalizado:
+        if cor in ["Preto", "Branco"] and delayContagem:
+            print("entrou")
+            time.sleep(0.25)
+            delayContagem = False
+        
         # Calcular o tempo restante para o próximo registro
         tempo_atual = time.time()
         tempo_restante = max(
             0, int(intervalo_tempo - (tempo_atual - ultimo_registro)))
+        
+
         if cor in ["Preto", "Branco"] and tempo_restante == 0:
             # Registrar a cor detectada
             registrar_cor(cor)
