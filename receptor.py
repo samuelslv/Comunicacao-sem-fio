@@ -62,12 +62,19 @@ def detectar_cor(frame):
     else:
         return "Preto"
 
+contBit = 0
 # Função para registrar a cor detectada em um arquivo .txt
 def registrar_cor(cor):
     with open("registro_cores.txt", "a", encoding='utf-8') as arquivo:
         if cor == "Preto":
+            global contBit
+            contBit+=1
+            print(contBit)
             arquivo.write("1")
+
         elif cor == "Branco":
+            contBit+=1
+            print(contBit)
             arquivo.write("0")
 
 
@@ -123,7 +130,7 @@ while True:
     if registro_ativo and not processo_finalizado:
         if cor in ["Preto", "Branco"] and delayContagem:
             print("entrou")
-            time.sleep(0.25)
+            time.sleep(0.12) #0.12 = 14dig. em=1000
             delayContagem = False
         
         # Calcular o tempo restante para o próximo registro
