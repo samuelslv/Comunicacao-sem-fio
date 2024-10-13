@@ -3,8 +3,6 @@ import numpy as np
 import time
 
 # Função para detectar a cor (preto ou branco)
-
-
 def detectar_cor(frame):
     # Definir área central
     altura, largura, _ = frame.shape
@@ -48,11 +46,10 @@ def detectar_cor(frame):
 
 
 contBit = 0
+
 # Função para registrar a cor detectada em um arquivo .txt
-
-
 def registrar_cor(cor):
-    with open("registro_cores.txt", "a", encoding='utf-8') as arquivo:
+    with open("registroBinarioV2.txt", "a", encoding='utf-8') as arquivo:
         if cor == "Preto":
             global contBit
             contBit += 1
@@ -63,15 +60,6 @@ def registrar_cor(cor):
             contBit += 1
             print(contBit)
             arquivo.write("0")
-
-
-def binary_to_text(binary_string):
-    """Converte uma string binária (em blocos de 8 bits) para texto."""
-    text = ''
-    for i in range(0, len(binary_string), 8):
-        byte = binary_string[i:i+8]  # Pega 8 bits por vez
-        text += chr(int(byte, 2))  # Converte para caractere ASCII
-    return text
 
 
 # Capturar vídeo da webcam
@@ -85,9 +73,7 @@ cap.set(cv2.CAP_PROP_EXPOSURE, 0)
 intervalo_tempo = 2
 ultimo_registro = time.time()  # Marca o tempo do último registro
 
-# Variáveis de controle para o processo
-# registro_ativo = False
-# processo_finalizado = False
+
 delayContagem = True
 
 while True:
@@ -137,18 +123,6 @@ while True:
 
     # Sair ao pressionar a tecla 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        with open("registro.txt", "r", encoding='utf-8') as file:
-            binary_data = file.read()
-
-        '''if len(binary_data) % 8 != 0:
-            print("Erro: A sequência binária não tem múltiplos de 8 bits!")
-        else:
-            converted_text = binary_to_text(binary_data)
-
-            with open("converted_text.txt", "w", encoding='utf-8') as output_file:
-                output_file.write(converted_text)
-
-            print("Texto convertido e salvo em 'converted_text.txt'.")'''
         break
 
 # Liberar a captura e fechar as janelas
