@@ -3,8 +3,6 @@ import numpy as np
 import time
 
 # Função para detectar a cor (preto ou branco)
-
-
 def detectar_cor(frame):
     # Definir área central
     altura, largura, _ = frame.shape
@@ -163,7 +161,7 @@ while True:
 
     # Sair ao pressionar a tecla 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        with open("registro_cores.txt", "r", encoding='utf-8') as file:
+        with open("registroBinario.txt", "r", encoding='utf-8') as file:
             binary_data = file.read()
 
         if len(binary_data) % 8 != 0:
@@ -171,10 +169,10 @@ while True:
         else:
             converted_text = binary_to_text(binary_data)
 
-            with open("converted_text.txt", "w", encoding='utf-8') as output_file:
+            with open("texto_traduzido.txt", "w", encoding='utf-8') as output_file:
                 output_file.write(converted_text)
 
-            print("Texto convertido e salvo em 'converted_text.txt'.")
+            print("Texto convertido e salvo em 'texto_traduzido.txt'.")
         break
 
 # Liberar a captura e fechar as janelas
