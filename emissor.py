@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import simpledialog
 
 class BlinkingWindow:
-    def _init_(self, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Texto para Binário Piscando")
         self.blinking = False  # Para controlar o estado do piscar
