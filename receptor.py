@@ -10,7 +10,7 @@ def detectar_cor(frame):
     # Definir área central
     altura, largura, _ = frame.shape
     centro_x, centro_y = largura // 2, altura // 2
-    tamanho_area = 80
+    tamanho_area = 5
 
     # Recorte da área central
     area_central = frame[centro_y - tamanho_area:centro_y +
