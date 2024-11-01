@@ -10,7 +10,7 @@ def detectar_cor(frame):
     # Definir área central
     altura, largura, _ = frame.shape
     centro_x, centro_y = largura // 2, altura // 2
-    tamanho_area = 25
+    tamanho_area = 80
 
     # Recorte da área central
     area_central = frame[centro_y - tamanho_area:centro_y +
@@ -51,7 +51,7 @@ def detectar_cor(frame):
     # Definir um limite para considerar a cor predominante
     limite = total_pixels * 0.5
 
-    # Se a maioria dos pixels forem pretos, brancos, verdes ou vermelhos, retorna a respectiva cor
+    # Se a maioria dos pixels forem pretos, brancos, verdes ou roxo, retorna a respectiva cor
     if black_pixels > limite:
         return "Preto"
     elif white_pixels > limite:
@@ -65,6 +65,7 @@ def detectar_cor(frame):
 
 
 contBit = 0
+
 # Função para registrar a cor detectada em um arquivo .txt
 
 
@@ -99,7 +100,7 @@ cap.set(cv2.CAP_PROP_EXPOSURE, 0)
 
 # Definir o intervalo de tempo em segundos para registrar uma nova cor
 # Intervalo de 5 segundos e no cell 3800ms///3 e de 2000ms///2 e de 1000ms//
-intervalo_tempo = 2
+intervalo_tempo = 2  # 2 ////////////////////////////////////////
 ultimo_registro = time.time()  # Marca o tempo do último registro
 
 # Variáveis de controle para o processo
@@ -134,7 +135,8 @@ while True:
     if registro_ativo and not processo_finalizado:
         if cor in ["Preto", "Branco"] and delayContagem:
             print("entrou")
-            time.sleep(0.12)  # 0.12 = 14dig. em=1000
+            # 0.12 = 14dig. em=1000 /////////////////////////////////////////////
+            time.sleep(0.8)
             delayContagem = False
 
         # Calcular o tempo restante para o próximo registro
@@ -150,7 +152,7 @@ while True:
     # Desenhar a área central (quadrado) na imagem
     altura, largura, _ = frame.shape
     centro_x, centro_y = largura // 2, altura // 2
-    tamanho_area = 25
+    tamanho_area = 5
     cv2.rectangle(frame, (centro_x - tamanho_area, centro_y - tamanho_area),
                   (centro_x + tamanho_area, centro_y + tamanho_area), (0, 255, 0), 2)
 
