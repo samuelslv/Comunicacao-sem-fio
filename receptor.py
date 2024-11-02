@@ -10,7 +10,7 @@ def detectar_cor(frame):
     # Definir área central
     altura, largura, _ = frame.shape
     centro_x, centro_y = largura // 2, altura // 2
-    tamanho_area = 5
+    tamanho_area = 3
 
     # Recorte da área central
     area_central = frame[centro_y - tamanho_area:centro_y +
@@ -33,7 +33,7 @@ def detectar_cor(frame):
     lower_purple = np.array([130, 50, 50])
     upper_purple = np.array([160, 255, 255])
 
-    # Criar máscaras para preto e branco
+    # Criar máscaras para preto, branco, verde e roxo
     mask_black = cv2.inRange(hsv, lower_black, upper_black)
     mask_white = cv2.inRange(hsv, lower_white, upper_white)
     mask_green = cv2.inRange(hsv, lower_green, upper_green)
@@ -47,11 +47,8 @@ def detectar_cor(frame):
 
     # Número total de pixels da área (dividido por 3 para RGB)
     total_pixels = area_central.size // 3
+    limite = total_pixels * 0.5  # Limite para considerar a cor predominante
 
-    # Definir um limite para considerar a cor predominante
-    limite = total_pixels * 0.5
-
-    # Se a maioria dos pixels forem pretos, brancos, verdes ou roxo, retorna a respectiva cor
     if black_pixels > limite:
         return "Preto"
     elif white_pixels > limite:
@@ -71,88 +68,70 @@ contBit = 0
 
 def registrar_cor(cor):
     with open("registroBinario.txt", "a", encoding='utf-8') as arquivo:
+        global contBit
         if cor == "Preto":
-            global contBit
             contBit += 1
-            print(contBit)
+            print(contBit, "= 1")
             arquivo.write("1")
-
         elif cor == "Branco":
             contBit += 1
-            print(contBit)
+            print(contBit, "= 0")
             arquivo.write("0")
 
 
 def binary_to_text(binary_string):
-    """Converte uma string binária (em blocos de 8 bits) para texto."""
     text = ''
     for i in range(0, len(binary_string), 8):
-        byte = binary_string[i:i+8]  # Pega 8 bits por vez
-        text += chr(int(byte, 2))  # Converte para caractere ASCII
+        byte = binary_string[i:i+8]
+        text += chr(int(byte, 2))
     return text
 
 
 # Capturar vídeo da webcam
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_EXPOSURE, 1)  # Ajustar a exposição da câmera
 
-# Ajustar a exposição da câmera (valor baixo)
-cap.set(cv2.CAP_PROP_EXPOSURE, 0)
-
-# Definir o intervalo de tempo em segundos para registrar uma nova cor
-# Intervalo de 5 segundos e no cell 3800ms///3 e de 2000ms///2 e de 1000ms//
-intervalo_tempo = 2  # 2 ////////////////////////////////////////
-ultimo_registro = time.time()  # Marca o tempo do último registro
-
-# Variáveis de controle para o processo
+intervalo_tempo = 2  # Intervalo em segundos para registrar uma nova cor
+ultimo_registro = time.time()  # Tempo do último registro
 registro_ativo = False
 processo_finalizado = False
-delayContagem = True
+delayContagem = False
 
 while True:
-    # Ler o frame da webcam
     ret, frame = cap.read()
     if not ret:
         break
+    frame = cv2.flip(frame, 1)  # Inverter o frame
 
-    # Inverter o frame verticalmente
-    frame = cv2.flip(frame, 1)
+    cor = detectar_cor(frame)  # Detectar a cor
 
-    # Detectar a cor predominante na área central
-    cor = detectar_cor(frame)
-
-    # Se detectarmos verde e o registro ainda não estiver ativo
     if cor == "Verde" and not registro_ativo:
         print("Início dos registros!")
         registro_ativo = True
 
-    # Se detectarmos roxo, finaliza o processo
     if cor == "Roxo" and registro_ativo and not processo_finalizado:
         print("Fim dos registros!")
         processo_finalizado = True
         registro_ativo = False
 
-    # Se o registro estiver ativo e não finalizado, registrar preto ou branco
     if registro_ativo and not processo_finalizado:
         if cor in ["Preto", "Branco"] and delayContagem:
-            print("entrou")
-            # 0.12 = 14dig. em=1000 /////////////////////////////////////////////
-            time.sleep(0.8)
+            print("sleep")
+            time.sleep(0.500)  # Delay para estabilização
             delayContagem = False
 
-        # Calcular o tempo restante para o próximo registro
         tempo_atual = time.time()
         tempo_restante = max(
             0, int(intervalo_tempo - (tempo_atual - ultimo_registro)))
 
         if cor in ["Preto", "Branco"] and tempo_restante == 0:
-            # Registrar a cor detectada
             registrar_cor(cor)
-            ultimo_registro = tempo_atual  # Atualizar o tempo do último registro
+            ultimo_registro = tempo_atual
 
-    # Desenhar a área central (quadrado) na imagem
+    # Desenhar a área central na imagem
     altura, largura, _ = frame.shape
     centro_x, centro_y = largura // 2, altura // 2
-    tamanho_area = 5
+    tamanho_area = 4
     cv2.rectangle(frame, (centro_x - tamanho_area, centro_y - tamanho_area),
                   (centro_x + tamanho_area, centro_y + tamanho_area), (0, 255, 0), 2)
 
@@ -163,12 +142,11 @@ while True:
         cv2.putText(frame, f"Proximo registro em: {
                     tempo_restante}s", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-    # Mostrar o vídeo com a área e o nome da cor
     cv2.imshow('Reconhecimento de Cor', frame)
 
-    # Sair ao pressionar a tecla 'q'
+    # Finalizar ao pressionar 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        if os.path.exists("registroBinario.txt"):  # Verifica se o arquivo existe
+        if os.path.exists("registroBinario.txt"):
             with open("registroBinario.txt", "r", encoding='utf-8') as file:
                 binary_data = file.read()
 
@@ -176,15 +154,12 @@ while True:
                 print("Erro: A sequência binária não tem múltiplos de 8 bits!")
             else:
                 converted_text = binary_to_text(binary_data)
-
                 with open("texto_traduzido.txt", "w", encoding='utf-8') as output_file:
                     output_file.write(converted_text)
-
                 print("Texto convertido e salvo em 'texto_traduzido.txt'.")
         else:
             print("O arquivo 'registroBinario.txt' não foi encontrado.")
         break
 
-# Liberar a captura e fechar as janelas
 cap.release()
 cv2.destroyAllWindows()
