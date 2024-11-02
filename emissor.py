@@ -32,10 +32,10 @@ class BlinkingWindow:
             return  # Para o piscar se o processo não estiver ativo
 
         if self.blink_index == -1:
-            # Primeiro piscar vermelho para indicar o início
+            # Primeiro piscar verde para indicar o início
             self.root.configure(bg="green")
             self.blink_index += 1
-            self.root.after(4000, self.blink)
+            self.root.after(50000, self.blink)
         elif self.blink_index < len(self.binary_string):
             # Piscar baseado nos bits binários
             bit = self.binary_string[self.blink_index]
@@ -44,10 +44,10 @@ class BlinkingWindow:
             self.blink_index += 1
             self.root.after(1000, self.blink)
         elif self.blink_index == len(self.binary_string):
-            # Último piscar vermelho para indicar o fim
+            # Último piscar roxo para indicar o fim
             self.root.configure(bg="purple")
             self.blink_index += 1
-            self.root.after(4000, self.stop_blink)
+            self.root.after(1000, self.stop_blink)
 
     def stop_blink(self):
         """Finaliza o processo de piscar."""
