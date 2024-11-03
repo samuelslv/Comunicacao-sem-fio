@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import simpledialog
+from ws import send_ws_message
+
 
 class BlinkingWindow:
     def __init__(self, root):
@@ -7,7 +9,9 @@ class BlinkingWindow:
         self.root.title("Texto para Binário Piscando")
         self.blinking = False  # Para controlar o estado do piscar
         self.binary_string = ""  # Inicializa a string binária
-        self.blink_index = -1  # Índice inicial para controle dos piscas (começa em -1 para incluir o primeiro vermelho)
+        self.blink_index = (
+            -1
+        )  # Índice inicial para controle dos piscas (começa em -1 para incluir o primeiro vermelho)
 
         # Botão para iniciar a conversão e o piscar
         self.button = tk.Button(self.root, text="Inserir Texto", command=self.on_submit)
@@ -15,15 +19,18 @@ class BlinkingWindow:
 
     def text_to_binary(self, text):
         """Converte o texto para uma representação binária."""
-        return ''.join(format(ord(char), '08b') for char in text)
+        return "".join(format(ord(char), "08b") for char in text)
 
     def on_submit(self):
         """Função chamada quando o botão é pressionado para iniciar o piscar."""
         user_input = simpledialog.askstring("Input", "Digite um texto:")
         if user_input:
+            send_ws_message(user_input)
             self.binary_string = self.text_to_binary(user_input)
             self.blinking = True
-            self.blink_index = -1  # Redefine o índice para incluir o primeiro piscar vermelho
+            self.blink_index = (
+                -1
+            )  # Redefine o índice para incluir o primeiro piscar vermelho
             self.blink()  # Inicia o piscar
 
     def blink(self):
@@ -39,7 +46,7 @@ class BlinkingWindow:
         elif self.blink_index < len(self.binary_string):
             # Piscar baseado nos bits binários
             bit = self.binary_string[self.blink_index]
-            color = "black" if bit == '1' else "white"
+            color = "black" if bit == "1" else "white"
             self.root.configure(bg=color)
             self.blink_index += 1
             self.root.after(1000, self.blink)
@@ -53,6 +60,7 @@ class BlinkingWindow:
         """Finaliza o processo de piscar."""
         self.blinking = False
         self.root.configure(bg="purple")  # Retorna a janela para cor branca ao final
+
 
 # Cria a janela principal
 root = tk.Tk()
