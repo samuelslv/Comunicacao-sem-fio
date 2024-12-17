@@ -13,7 +13,7 @@ class BlinkingWindow:
         self.button = tk.Button(self.root, text="Inserir Texto", command=self.on_submit)
         self.button.pack()
 
-    def text_to_binary(self, text):
+    def txt_para_bin(self, text):
         """Converte o texto para uma representação binária."""
         return ''.join(format(ord(char), '08b') for char in text)
 
@@ -21,7 +21,7 @@ class BlinkingWindow:
         """Função chamada quando o botão é pressionado para iniciar o piscar."""
         user_input = simpledialog.askstring("Input", "Digite um texto:")
         if user_input:
-            self.binary_string = self.text_to_binary(user_input)
+            self.binary_string = self.txt_para_bin(user_input)
             self.blinking = True
             self.blink_index = -1  # Redefine o índice para incluir o primeiro piscar vermelho
             self.blink()  # Inicia o piscar
@@ -32,10 +32,10 @@ class BlinkingWindow:
             return  # Para o piscar se o processo não estiver ativo
 
         if self.blink_index == -1:
-            # Primeiro piscar verde para indicar o início
+            # Primeiro piscar verde por 2segundos para indicar o início
             self.root.configure(bg="green")
             self.blink_index += 1
-            self.root.after(50000, self.blink)
+            self.root.after(2000, self.blink)
         elif self.blink_index < len(self.binary_string):
             # Piscar baseado nos bits binários
             bit = self.binary_string[self.blink_index]
@@ -47,9 +47,9 @@ class BlinkingWindow:
             # Último piscar roxo para indicar o fim
             self.root.configure(bg="purple")
             self.blink_index += 1
-            self.root.after(1000, self.stop_blink)
+            self.root.after(1000, self.parar_blink)
 
-    def stop_blink(self):
+    def parar_blink(self):
         """Finaliza o processo de piscar."""
         self.blinking = False
         self.root.configure(bg="purple")  # Retorna a janela para cor branca ao final
