@@ -4,8 +4,6 @@ import numpy as np
 import time
 
 # Função para detectar a cor (preto ou branco)
-
-
 def detectar_cor(frame):
     # Definir área central
     altura, largura, _ = frame.shape
@@ -64,8 +62,6 @@ def detectar_cor(frame):
 contBit = 0
 
 # Função para registrar a cor detectada em um arquivo .txt
-
-
 def registrar_cor(cor):
     with open("registroBinario.txt", "a", encoding='utf-8') as arquivo:
         global contBit
@@ -79,7 +75,7 @@ def registrar_cor(cor):
             arquivo.write("0")
 
 
-def binary_to_text(binary_string):
+def bin_para_txt(binary_string):
     text = ''
     for i in range(0, len(binary_string), 8):
         byte = binary_string[i:i+8]
@@ -153,7 +149,7 @@ while True:
             if len(binary_data) % 8 != 0:
                 print("Erro: A sequência binária não tem múltiplos de 8 bits!")
             else:
-                converted_text = binary_to_text(binary_data)
+                converted_text = bin_para_txt(binary_data)
                 with open("texto_traduzido.txt", "w", encoding='utf-8') as output_file:
                     output_file.write(converted_text)
                 print("Texto convertido e salvo em 'texto_traduzido.txt'.")
